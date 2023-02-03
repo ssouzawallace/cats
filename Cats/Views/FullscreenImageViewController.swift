@@ -31,7 +31,7 @@ class FullscreenImageViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let view = UIScrollView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .clear
+        view.backgroundColor = .white
         view.bounces = true
         view.bouncesZoom = true
         view.maximumZoomScale = 10.0
