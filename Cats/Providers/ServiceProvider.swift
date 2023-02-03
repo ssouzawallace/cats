@@ -14,8 +14,14 @@ struct ServiceProvider {
     let url = URL(string: "https://api.imgur.com/3/gallery/search/?q=cats")
     
     init() {
-        self.clientId = String(describing: getenv("client_id"))
-        self.clientSecret = String(describing: getenv("client_secret"))
+        guard let clientId = ProcessInfo.processInfo.environment["client_id"], let clientSecret = ProcessInfo.processInfo.environment["client_secret"] else {
+            self.clientId = ""
+            self.clientSecret = ""
+            print("WARNING! You have to set the `clinet_id` and `client_secret` environment variables which are the two required keys in order to fetch the images from the Imgur API.")
+            return
+        }
+        self.clientId = clientId
+        self.clientSecret = clientSecret
     }
 }
 
