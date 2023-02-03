@@ -12,6 +12,8 @@ class ImageDownloadManager {
     
     static let shared = ImageDownloadManager() // Singleton
     
+    private var localCache = [URL: UIImage?]()
+    
     private let container: NSPersistentContainer
     
     private var isCoreDataReady = false
@@ -53,7 +55,9 @@ class ImageDownloadManager {
         var request = URLRequest(url: url)
         request.cachePolicy = .returnCacheDataElseLoad
         
-        if let cachedResponseData = URLCache.shared.cachedResponse(for: request)?.data {
+        if let image = localCache[url] { // Cache L1
+            completion(image)
+        } else if let cachedResponseData = URLCache.shared.cachedResponse(for: request)?.data { // Cache L2
             let image = UIImage(data: cachedResponseData)
             completion(image)
         } else {
@@ -62,17 +66,18 @@ class ImageDownloadManager {
                 let cachedUrlResponse = CachedURLResponse(response: response, data: data)
                 URLCache.shared.storeCachedResponse(cachedUrlResponse, for: request)
                 DispatchQueue.global(qos: .background).async {
-                    self?.saveImage(data: data, response: response, for: url)
+                    self?.saveImageOnDisk(data: data, response: response, for: url)
                 }
                 
                 let image = UIImage(data: data)
+                self?.localCache[url] = image
                 completion(image)
             }
             .resume()
         }
     }
     
-    private func saveImage(data: Data, response: URLResponse, for url: URL) {
+    private func saveImageOnDisk(data: Data, response: URLResponse, for url: URL) {
         do {
             let encodedResponse = try NSKeyedArchiver.archivedData(withRootObject: response,
                                                                    requiringSecureCoding: false)
@@ -99,7 +104,11 @@ class ImageDownloadManager {
     }
     
     func hasCachedImage(for url: URL) -> Bool {
-        let request = URLRequest(url: url)
-        return URLCache.shared.cachedResponse(for: request)?.data != nil
+        if localCache[url] != nil {
+            return true
+        } else {
+            let request = URLRequest(url: url)
+            return URLCache.shared.cachedResponse(for: request)?.data != nil
+        }
     }
 }

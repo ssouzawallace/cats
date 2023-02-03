@@ -64,17 +64,12 @@ class CollectionViewItemImageCell: UICollectionViewCell {
     }
     
     private func load() {
-        guard let url = url else {
-            imageView.image = nil
-            return
-        }
+        guard let url = url else { return }
         showActivityIndicator()
         ImageDownloadManager.shared.fetchImage(for: url) { [weak self] image in
             DispatchQueue.main.async {
                 self?.hideActivityIndicator()
-                if self?.url != nil {
-                    self?.imageView.image = image
-                }
+                self?.imageView.image = image
             }
         }
     }
