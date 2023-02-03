@@ -31,6 +31,7 @@
 		17FDE1E5298D8E6000748D99 /* GallerySearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FDE1E4298D8E6000748D99 /* GallerySearchResponse.swift */; };
 		17FDE1E7298D8E7A00748D99 /* ServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FDE1E6298D8E7A00748D99 /* ServiceError.swift */; };
 		17FDE1EB298D9A6500748D99 /* GallerySearchErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FDE1EA298D9A6500748D99 /* GallerySearchErrorResponse.swift */; };
+		17FDE1ED298D9C1100748D99 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 17FDE1EC298D9C1100748D99 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		17FDE1E4298D8E6000748D99 /* GallerySearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySearchResponse.swift; sourceTree = "<group>"; };
 		17FDE1E6298D8E7A00748D99 /* ServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceError.swift; sourceTree = "<group>"; };
 		17FDE1EA298D9A6500748D99 /* GallerySearchErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySearchErrorResponse.swift; sourceTree = "<group>"; };
+		17FDE1EC298D9C1100748D99 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 		17CC255F298C39140007584B = {
 			isa = PBXGroup;
 			children = (
+				17FDE1EC298D9C1100748D99 /* README.md */,
 				17CC256A298C39150007584B /* Cats */,
 				17CC2581298C39180007584B /* CatsTests */,
 				17CC258B298C39180007584B /* CatsUITests */,
@@ -366,6 +369,7 @@
 			files = (
 				17CC2578298C39170007584B /* LaunchScreen.storyboard in Resources */,
 				17CC2575298C39170007584B /* Assets.xcassets in Resources */,
+				17FDE1ED298D9C1100748D99 /* README.md in Resources */,
 				17CC25A0298C3FE90007584B /* mockResponse.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
