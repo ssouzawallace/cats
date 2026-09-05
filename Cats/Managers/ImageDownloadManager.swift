@@ -16,8 +16,6 @@ class ImageDownloadManager {
     
     private let container: NSPersistentContainer
     
-    private var isCoreDataReady = false
-    
     private init() {
         container = NSPersistentContainer(name: "Cats")
         container.viewContext.automaticallyMergesChangesFromParent = true

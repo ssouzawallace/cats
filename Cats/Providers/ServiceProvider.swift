@@ -9,19 +9,16 @@ import Foundation
 
 struct ServiceProvider {
     private let clientId: String
-    private let clientSecret: String
     
     let url = URL(string: "https://api.imgur.com/3/gallery/search/?q=cats")
     
     init() {
-        guard let clientId = ProcessInfo.processInfo.environment["client_id"], let clientSecret = ProcessInfo.processInfo.environment["client_secret"] else {
+        guard let clientId = ProcessInfo.processInfo.environment["client_id"] else {
             self.clientId = ""
-            self.clientSecret = ""
-            print("WARNING! You have to set the `clinet_id` and `client_secret` environment variables which are the two required keys in order to fetch the images from the Imgur API.")
+            print("WARNING! Set the `client_id` environment variable. The Imgur API needs it to return images.")
             return
         }
         self.clientId = clientId
-        self.clientSecret = clientSecret
     }
 }
 
