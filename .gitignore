@@ -1,0 +1,20 @@
+## macOS
+.DS_Store
+
+## Xcode
+build/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## Xcode per-user state — window layout, breakpoints, the active scheme.
+## Personal to whoever opened the project, and a constant source of noise in diffs.
+xcuserdata/
+*.xcuserstate
