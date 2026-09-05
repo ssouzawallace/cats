@@ -51,6 +51,7 @@ class CatsViewController: UICollectionViewController {
                 
         addLoadingView()
         addEmptyStateView()
+        addRefreshControl()
         
         collectionView.register(CollectionViewItemImageCell.self)
         
@@ -133,7 +134,6 @@ extension CatsViewController {
 extension CatsViewController: CatsGalleryView {
     func present(cats: [CatModel]) {
         self.cats = cats
-        addRefreshControl()
     }
     
     func present(errorMessage message: String) {
