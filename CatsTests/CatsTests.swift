@@ -11,8 +11,12 @@ import XCTest
 final class CatsTests: XCTestCase {
 
     func testViewModelSuccess() throws {
-        struct MockView: CatsGalleryView {
+        final class MockView: CatsGalleryView {
             let expectation: XCTestExpectation
+
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
             
             func present(cats: [Cats.CatModel]) {
                 expectation.fulfill()
@@ -35,11 +39,19 @@ final class CatsTests: XCTestCase {
 
         viewModel.fetchImages()
         wait(for: [expectation], timeout: 5)
+
+        // The view model holds the view weakly, so the mock has to be kept
+        // alive until the callback has run.
+        withExtendedLifetime(mockView) { }
     }
     
     func testViewModelFailure() throws {
-        struct MockView: CatsGalleryView {
+        final class MockView: CatsGalleryView {
             let expectation: XCTestExpectation
+
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
             
             func present(cats: [Cats.CatModel]) {
                 
@@ -63,6 +75,10 @@ final class CatsTests: XCTestCase {
         
         viewModel.fetchImages()
         wait(for: [expectation], timeout: 5)
+
+        // The view model holds the view weakly, so the mock has to be kept
+        // alive until the callback has run.
+        withExtendedLifetime(mockView) { }
     }
 
 }

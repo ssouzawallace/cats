@@ -7,13 +7,16 @@
 
 import Foundation
 
-protocol CatsGalleryView {
+/// Class-bound so the view model can hold the view weakly. Without that the
+/// view controller owns the view model, the view model owns the view
+/// controller, and neither is ever released.
+protocol CatsGalleryView: AnyObject {
     func present(cats: [CatModel])
     func present(errorMessage: String)
 }
 
 struct CatsViewModel {
-    let view: CatsGalleryView?
+    weak var view: CatsGalleryView?
     let provider: ServiceProviding
     
     init(view: CatsGalleryView? = nil, provider: ServiceProviding = ServiceProvider()) {
