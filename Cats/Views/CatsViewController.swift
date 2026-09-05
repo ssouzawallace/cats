@@ -1,0 +1,143 @@
+//
+//  CatsViewController.swift
+//  Cats
+//
+//  Created by Wallace Silva on 02/02/23.
+//
+
+import UIKit
+
+class CatsViewController: UICollectionViewController {
+    
+    // MARK: - Constants
+    
+    private let loadingView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(style: .large)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.hidesWhenStopped = true
+        view.startAnimating()
+        return view
+    }()
+    
+    private let emptyStateView: UIView = {
+        let view = UILabel(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.font = .preferredFont(forTextStyle: .largeTitle)
+        view.text = "No cats found! :("
+        return view
+    }()
+    
+    // MARK: - Variables
+    
+    private var viewModel: CatsViewModel?
+    
+    private var cats = [Cat]() {
+        didSet {
+            loadingView.stopAnimating()
+            emptyStateView.isHidden = !cats.isEmpty
+            collectionView.refreshControl?.endRefreshing()
+            collectionView.reloadData()
+        }
+    }
+    
+    // MARK: - Life Cycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Cats"
+                
+        viewModel = CatsViewModel(view: self)
+                
+        addLoadingView()
+        addEmptyStateView()
+        addRefreshControl()
+        
+        collectionView.register(CatImageCell.self)
+        
+        loadCats()
+    }
+    
+    private func loadCats() {
+        emptyStateView.isHidden = true
+        Task { await viewModel?.fetchImages() }
+    }
+    
+    // MARK: Layout
+    
+    private func addRefreshControl() {
+        collectionView.refreshControl = UIRefreshControl(frame: .zero,
+                                                         primaryAction: UIAction { [weak self] _ in
+            self?.loadCats()
+        })
+    }
+    
+    private func addLoadingView() {
+        view.addSubview(loadingView)
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func addEmptyStateView() {
+        view.addSubview(emptyStateView)
+        NSLayoutConstraint.activate([
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        emptyStateView.isHidden = true
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension CatsViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let cat = cats[indexPath.row]
+        if ImageDownloadManager.shared.hasCachedImage(for: cat.url) {
+            Coordinator.presentFullScreenImage(for: cat, sender: self)
+        }
+    }
+    override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? CatImageCell else { return }
+        cell.url = nil
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+extension CatsViewController {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        1
+    }
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        cats.count
+    }
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let url = cats[indexPath.row].url
+        guard let cell = collectionView.dequeueReusableCell(ofType: CatImageCell.self, for: indexPath) else { return UICollectionViewCell() }
+        cell.url = url
+        return cell
+    }
+}
+
+// MARK: - CatsGalleryView
+extension CatsViewController: CatsGalleryView {
+    func present(cats: [Cat]) {
+        self.cats = cats
+    }
+    
+    func present(errorMessage message: String) {
+        let message = message + "\nWill try again."
+        let alert = UIAlertController(title: "Error",
+                                      message: message,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK",
+                                      style: .default,
+                                      handler: { [weak self] _ in
+            self?.loadCats()
+        }))
+        present(alert, animated: true)
+    }
+}
