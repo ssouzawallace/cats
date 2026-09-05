@@ -26,8 +26,8 @@ final class CatsTests: XCTestCase {
             }
         }
         struct MockProvider: ServiceProviding {
-            func fetchImages(with completion: @escaping (Result<GallerySearchResponse, ServiceError>) -> Void) {
-                completion(.success(GallerySearchResponse(data: [], success: true, status: 200)))
+            func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
+                completion(.success(PhotoSearchResponse(photos: [], page: 1, perPage: 0, totalResults: 0)))
             }
         }
         
@@ -63,7 +63,7 @@ final class CatsTests: XCTestCase {
             }
         }
         struct MockProvider: ServiceProviding {
-            func fetchImages(with completion: @escaping (Result<GallerySearchResponse, ServiceError>) -> Void) {
+            func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
                 completion(.failure(.requestError("Error")))
             }
         }

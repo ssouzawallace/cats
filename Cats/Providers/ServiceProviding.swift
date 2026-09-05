@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ServiceProviding {
-    func fetchImages(with completion: @escaping (Result<GallerySearchResponse, ServiceError>) -> Void)
+    func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void)
 }

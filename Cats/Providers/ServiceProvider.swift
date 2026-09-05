@@ -8,60 +8,63 @@
 import Foundation
 
 struct ServiceProvider {
-    private let clientId: String
-    
-    let url = URL(string: "https://api.imgur.com/3/gallery/search/?q=cats")
-    
+    private let apiKey: String
+
+    private let url = URL(string: "https://api.pexels.com/v1/search?query=cats&per_page=80")
+
     init() {
-        guard let clientId = ProcessInfo.processInfo.environment["client_id"] else {
-            self.clientId = ""
-            print("WARNING! Set the `client_id` environment variable. The Imgur API needs it to return images.")
+        guard let apiKey = ProcessInfo.processInfo.environment["API_KEY"] else {
+            self.apiKey = ""
+            print("WARNING! Set the `API_KEY` environment variable. The Pexels API needs it to return photos. See the README.")
             return
         }
-        self.clientId = clientId
+        self.apiKey = apiKey
     }
 }
 
 extension ServiceProvider: ServiceProviding {
-    
+
     private var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }
-    
+
     private var request: URLRequest? {
-        guard let url = url else { return nil }
+        guard let url else { return nil }
         var request = URLRequest(url: url)
-        request.setValue("Client-ID \(clientId)",
-                         forHTTPHeaderField: "Authorization")
+        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
         return request
     }
-    
-    func fetchImages(with completion: @escaping (Result<GallerySearchResponse, ServiceError>) -> Void) {
-        guard let request = request else { return completion(.failure(.requestCreation)) }
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard error == nil else { return completion(.failure(.requestError(error?.localizedDescription ?? ""))) }
-            
-            guard let data = data else { return completion(.failure(.decode)) }
-            
+
+    func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
+        guard let request else { return completion(.failure(.requestCreation)) }
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error {
+                return completion(.failure(.requestError(error.localizedDescription)))
+            }
+
+            guard let data else { return completion(.failure(.decode)) }
+
             do {
-                let decodedResponse = try decoder.decode(GallerySearchResponse.self, from: data)
-                completion(.success(decodedResponse))
+                completion(.success(try decoder.decode(PhotoSearchResponse.self, from: data)))
             } catch {
                 tryToDecodeErrorResponse(for: data, with: completion)
             }
         }
         .resume()
     }
-    
-    private func tryToDecodeErrorResponse(for data: Data, with completion: @escaping (Result<GallerySearchResponse, ServiceError>) -> Void) {
+
+    /// A failed request still returns a body, and it explains itself far better
+    /// than a decoding failure does — "Invalid API key", say.
+    private func tryToDecodeErrorResponse(for data: Data,
+                                          with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
         do {
-            let decodedResponse = try decoder.decode(GallerySearchErrorResponse.self, from: data)
-            completion(.failure(.requestError(decodedResponse.data.error)))
+            let response = try decoder.decode(PhotoSearchErrorResponse.self, from: data)
+            completion(.failure(.requestError(response.message)))
         } catch {
             completion(.failure(.decode))
         }
     }
 }
-

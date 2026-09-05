@@ -29,16 +29,7 @@ struct CatsViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    guard response.success else {
-                        view?.present(errorMessage: "Status: \(response.status)")
-                        return
-                    }
-                    let cats = response.data?.reduce([]) { partialResult, item in
-                        partialResult + (item.images ?? []).map({ itemImage in
-                            CatModel(url: itemImage.link, title: item.title ?? "no title")
-                        })
-                    }
-                    view?.present(cats: cats ?? [])
+                    view?.present(cats: response.photos.map { CatModel(photo: $0) })
                 case .failure(let error):
                     view?.present(errorMessage: error.description)
                 }
