@@ -15,25 +15,25 @@ protocol CatsGalleryView: AnyObject {
     func present(errorMessage: String)
 }
 
+/// On the main actor because everything it does ends in a call to the view.
+@MainActor
 struct CatsViewModel {
     weak var view: CatsGalleryView?
     let provider: ServiceProviding
-    
+
     init(view: CatsGalleryView? = nil, provider: ServiceProviding = ServiceProvider()) {
         self.view = view
         self.provider = provider
     }
-    
-    func fetchImages() {
-        provider.fetchImages { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    view?.present(cats: response.photos.map { Cat(photo: $0) })
-                case .failure(let error):
-                    view?.present(errorMessage: error.description)
-                }
-            }
+
+    func fetchImages() async {
+        do {
+            let response = try await provider.fetchImages()
+            view?.present(cats: response.photos.map { Cat(photo: $0) })
+        } catch let error as ServiceError {
+            view?.present(errorMessage: error.description)
+        } catch {
+            view?.present(errorMessage: error.localizedDescription)
         }
     }
 }

@@ -60,7 +60,7 @@ class CatsViewController: UICollectionViewController {
     
     private func loadCats() {
         emptyStateView.isHidden = true
-        viewModel?.fetchImages()
+        Task { await viewModel?.fetchImages() }
     }
     
     // MARK: Layout

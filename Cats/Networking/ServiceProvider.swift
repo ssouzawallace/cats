@@ -37,34 +37,25 @@ extension ServiceProvider: ServiceProviding {
         return request
     }
 
-    func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
-        guard let request else { return completion(.failure(.requestCreation)) }
+    func fetchImages() async throws -> PhotoSearchResponse {
+        guard let request else { throw ServiceError.requestCreation }
 
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            if let error {
-                return completion(.failure(.requestError(error.localizedDescription)))
-            }
-
-            guard let data else { return completion(.failure(.decode)) }
-
-            do {
-                completion(.success(try decoder.decode(PhotoSearchResponse.self, from: data)))
-            } catch {
-                tryToDecodeErrorResponse(for: data, with: completion)
-            }
-        }
-        .resume()
-    }
-
-    /// A failed request still returns a body, and it explains itself far better
-    /// than a decoding failure does — "Invalid API key", say.
-    private func tryToDecodeErrorResponse(for data: Data,
-                                          with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
+        let data: Data
         do {
-            let response = try decoder.decode(PhotoSearchErrorResponse.self, from: data)
-            completion(.failure(.requestError(response.message)))
+            (data, _) = try await URLSession.shared.data(for: request)
         } catch {
-            completion(.failure(.decode))
+            throw ServiceError.requestError(error.localizedDescription)
+        }
+
+        do {
+            return try decoder.decode(PhotoSearchResponse.self, from: data)
+        } catch {
+            // A failed request still returns a body, and it explains itself far
+            // better than a decoding failure does — "Invalid API key", say.
+            guard let response = try? decoder.decode(PhotoSearchErrorResponse.self, from: data) else {
+                throw ServiceError.decode
+            }
+            throw ServiceError.requestError(response.message)
         }
     }
 }

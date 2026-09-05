@@ -8,77 +8,50 @@
 import XCTest
 @testable import Cats
 
+@MainActor
 final class CatsTests: XCTestCase {
 
-    func testViewModelSuccess() throws {
-        final class MockView: CatsGalleryView {
-            let expectation: XCTestExpectation
+    /// Records what the view model asked the view to show.
+    private final class SpyView: CatsGalleryView {
+        private(set) var cats: [Cat]?
+        private(set) var errorMessage: String?
 
-            init(expectation: XCTestExpectation) {
-                self.expectation = expectation
-            }
-            
-            func present(cats: [Cats.Cat]) {
-                expectation.fulfill()
-            }
-            func present(errorMessage: String) {
-                
-            }
+        func present(cats: [Cat]) {
+            self.cats = cats
         }
-        struct MockProvider: ServiceProviding {
-            func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
-                completion(.success(PhotoSearchResponse(photos: [], page: 1, perPage: 0, totalResults: 0)))
-            }
+
+        func present(errorMessage: String) {
+            self.errorMessage = errorMessage
         }
-        
-        let expectation = self.expectation(description: "Request Success")
-        let mockView = MockView(expectation: expectation)
-        let mockProvider = MockProvider()
-        let viewModel = CatsViewModel(view: mockView,
-                                      provider: mockProvider)
-
-        viewModel.fetchImages()
-        wait(for: [expectation], timeout: 5)
-
-        // The view model holds the view weakly, so the mock has to be kept
-        // alive until the callback has run.
-        withExtendedLifetime(mockView) { }
-    }
-    
-    func testViewModelFailure() throws {
-        final class MockView: CatsGalleryView {
-            let expectation: XCTestExpectation
-
-            init(expectation: XCTestExpectation) {
-                self.expectation = expectation
-            }
-            
-            func present(cats: [Cats.Cat]) {
-                
-            }
-            func present(errorMessage: String) {
-                let expectedMessage = "There was an error with the request\n" + "Error"
-                XCTAssertEqual(errorMessage, expectedMessage)
-                expectation.fulfill()
-            }
-        }
-        struct MockProvider: ServiceProviding {
-            func fetchImages(with completion: @escaping (Result<PhotoSearchResponse, ServiceError>) -> Void) {
-                completion(.failure(.requestError("Error")))
-            }
-        }
-        let expectation = self.expectation(description: "Request Failure")
-        let mockView = MockView(expectation: expectation)
-        let mockProvider = MockProvider()
-        let viewModel = CatsViewModel(view: mockView,
-                                      provider: mockProvider)
-        
-        viewModel.fetchImages()
-        wait(for: [expectation], timeout: 5)
-
-        // The view model holds the view weakly, so the mock has to be kept
-        // alive until the callback has run.
-        withExtendedLifetime(mockView) { }
     }
 
+    private struct StubProvider: ServiceProviding {
+        let result: Result<PhotoSearchResponse, ServiceError>
+
+        func fetchImages() async throws -> PhotoSearchResponse {
+            try result.get()
+        }
+    }
+
+    func testPresentsTheCatsFromASuccessfulResponse() async {
+        let response = PhotoSearchResponse(photos: [], page: 1, perPage: 0, totalResults: 0)
+        let view = SpyView()
+        let viewModel = CatsViewModel(view: view, provider: StubProvider(result: .success(response)))
+
+        await viewModel.fetchImages()
+
+        XCTAssertEqual(view.cats?.count, 0)
+        XCTAssertNil(view.errorMessage)
+    }
+
+    func testPresentsTheDescriptionOfAFailure() async {
+        let view = SpyView()
+        let viewModel = CatsViewModel(view: view,
+                                      provider: StubProvider(result: .failure(.requestError("Error"))))
+
+        await viewModel.fetchImages()
+
+        XCTAssertEqual(view.errorMessage, "There was an error with the request\nError")
+        XCTAssertNil(view.cats)
+    }
 }
