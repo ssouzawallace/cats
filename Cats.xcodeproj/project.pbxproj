@@ -131,14 +131,6 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		17712C25298D56980014EF67 /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				17CC25AA298C58D90007584B /* ImageDownloadManager.swift */,
-			);
-			path = Managers;
-			sourceTree = "<group>";
-		};
 		17712C26298D56A50014EF67 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -146,22 +138,6 @@
 				17CC2576298C39170007584B /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		17712C27298D56EF0014EF67 /* CollectionViewLayouts */ = {
-			isa = PBXGroup;
-			children = (
-				17712C1D298D4DE60014EF67 /* CatsCollectionViewLayout.swift */,
-			);
-			path = CollectionViewLayouts;
-			sourceTree = "<group>";
-		};
-		17712C28298D57270014EF67 /* CollectionViewCells */ = {
-			isa = PBXGroup;
-			children = (
-				17CC25A3298C45EA0007584B /* CatImageCell.swift */,
-			);
-			path = CollectionViewCells;
 			sourceTree = "<group>";
 		};
 		17712C29298D616C0014EF67 /* Coordinators */ = {
@@ -213,9 +189,8 @@
 				17712C29298D616C0014EF67 /* Coordinators */,
 				175D4180298C81930072F81A /* CoreData */,
 				17712C1F298D56360014EF67 /* Extensions */,
-				17712C25298D56980014EF67 /* Managers */,
 				17712C2C298D83370014EF67 /* Model */,
-				17CC25A6298C461A0007584B /* Providers */,
+				17CC25A6298C461A0007584B /* Networking */,
 				17712C26298D56A50014EF67 /* Resources */,
 				17712C24298D568B0014EF67 /* ViewModels */,
 				17CC25A5298C460A0007584B /* Views */,
@@ -245,19 +220,20 @@
 			children = (
 				17CC256F298C39150007584B /* CatsViewController.swift */,
 				17CC25A1298C44560007584B /* FullscreenImageViewController.swift */,
-				17712C28298D57270014EF67 /* CollectionViewCells */,
-				17712C27298D56EF0014EF67 /* CollectionViewLayouts */,
+				17CC25A3298C45EA0007584B /* CatImageCell.swift */,
+				17712C1D298D4DE60014EF67 /* CatsCollectionViewLayout.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		17CC25A6298C461A0007584B /* Providers */ = {
+		17CC25A6298C461A0007584B /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				17CC259B298C39DD0007584B /* ServiceProviding.swift */,
 				17CC259D298C39E60007584B /* ServiceProvider.swift */,
+				17CC25AA298C58D90007584B /* ImageDownloadManager.swift */,
 			);
-			path = Providers;
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
