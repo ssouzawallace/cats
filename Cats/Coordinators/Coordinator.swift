@@ -8,7 +8,7 @@
 import UIKit
 
 struct Coordinator {
-    static func presentFullScreenImage(for cat: CatModel, sender: UIViewController) {
+    static func presentFullScreenImage(for cat: Cat, sender: UIViewController) {
         let destination = FullscreenImageViewController(with: cat.url)
         destination.title = cat.title
         destination.view.backgroundColor = sender.view.backgroundColor

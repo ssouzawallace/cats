@@ -11,7 +11,7 @@ import Foundation
 /// view controller owns the view model, the view model owns the view
 /// controller, and neither is ever released.
 protocol CatsGalleryView: AnyObject {
-    func present(cats: [CatModel])
+    func present(cats: [Cat])
     func present(errorMessage: String)
 }
 
@@ -29,7 +29,7 @@ struct CatsViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    view?.present(cats: response.photos.map { CatModel(photo: $0) })
+                    view?.present(cats: response.photos.map { Cat(photo: $0) })
                 case .failure(let error):
                     view?.present(errorMessage: error.description)
                 }

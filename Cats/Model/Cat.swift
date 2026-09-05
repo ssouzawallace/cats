@@ -1,5 +1,5 @@
 //
-//  CatModel.swift
+//  Cat.swift
 //  Cats
 //
 //  Created by Wallace Silva on 03/02/23.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct CatModel {
+struct Cat {
     let url: URL
     let title: String
 }
 
-extension CatModel {
+extension Cat {
     /// Pexels offers each photo at several sizes; `large` is big enough to fill
     /// the fullscreen view without pulling down the multi-megabyte original.
     ///

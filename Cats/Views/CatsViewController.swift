@@ -31,7 +31,7 @@ class CatsViewController: UICollectionViewController {
     
     private var viewModel: CatsViewModel?
     
-    private var cats = [CatModel]() {
+    private var cats = [Cat]() {
         didSet {
             loadingView.stopAnimating()
             emptyStateView.isHidden = !cats.isEmpty
@@ -53,7 +53,7 @@ class CatsViewController: UICollectionViewController {
         addEmptyStateView()
         addRefreshControl()
         
-        collectionView.register(CollectionViewItemImageCell.self)
+        collectionView.register(CatImageCell.self)
         
         loadCats()
     }
@@ -109,7 +109,7 @@ extension CatsViewController {
         }
     }
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? CollectionViewItemImageCell else { return }
+        guard let cell = cell as? CatImageCell else { return }
         cell.url = nil
     }
 }
@@ -124,7 +124,7 @@ extension CatsViewController {
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let url = cats[indexPath.row].url
-        guard let cell = collectionView.dequeueReusableCell(ofType: CollectionViewItemImageCell.self, for: indexPath) else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(ofType: CatImageCell.self, for: indexPath) else { return UICollectionViewCell() }
         cell.url = url
         return cell
     }
@@ -132,7 +132,7 @@ extension CatsViewController {
 
 // MARK: - CatsGalleryView
 extension CatsViewController: CatsGalleryView {
-    func present(cats: [CatModel]) {
+    func present(cats: [Cat]) {
         self.cats = cats
     }
     

@@ -18,7 +18,7 @@ final class CatsTests: XCTestCase {
                 self.expectation = expectation
             }
             
-            func present(cats: [Cats.CatModel]) {
+            func present(cats: [Cats.Cat]) {
                 expectation.fulfill()
             }
             func present(errorMessage: String) {
@@ -53,7 +53,7 @@ final class CatsTests: XCTestCase {
                 self.expectation = expectation
             }
             
-            func present(cats: [Cats.CatModel]) {
+            func present(cats: [Cats.Cat]) {
                 
             }
             func present(errorMessage: String) {

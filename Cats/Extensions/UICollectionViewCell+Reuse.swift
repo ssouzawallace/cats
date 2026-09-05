@@ -1,5 +1,5 @@
 //
-//  UICollectionViewCellExtensions.swift
+//  UICollectionViewCell+Reuse.swift
 //  Cats
 //
 //  Created by Wallace Silva on 03/02/23.

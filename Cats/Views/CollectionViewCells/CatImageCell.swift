@@ -1,5 +1,5 @@
 //
-//  CollectionViewItemImageCell.swift
+//  CatImageCell.swift
 //  Cats
 //
 //  Created by Wallace Silva on 02/02/23.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CollectionViewItemImageCell: UICollectionViewCell {
+class CatImageCell: UICollectionViewCell {
     
     // MARK: - Constants
     
