@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct Coordinator {
+enum Coordinator {
     static func presentFullScreenImage(for cat: Cat, sender: UIViewController) {
-        let destination = FullscreenImageViewController(with: cat.url)
+        let destination = FullscreenImageViewController(url: cat.url)
         destination.title = cat.title
         destination.view.backgroundColor = sender.view.backgroundColor
         if let navigationController = sender.navigationController {

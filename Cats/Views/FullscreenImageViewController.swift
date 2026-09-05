@@ -50,7 +50,7 @@ class FullscreenImageViewController: UIViewController {
     
     //MARK: - Initializers
     
-    required init(with url: URL) {
+    init(url: URL) {
         self.url = url
         super.init(nibName: nil, bundle: nil)
     }
@@ -102,22 +102,12 @@ class FullscreenImageViewController: UIViewController {
     
     private func addScrollView() {
         view.addSubview(scrollView)
-        scrollView
-            .topAnchor
-            .constraint(equalTo: view.topAnchor)
-            .isActive = true
-        scrollView
-            .bottomAnchor
-            .constraint(equalTo: view.bottomAnchor)
-            .isActive = true
-        scrollView
-            .leadingAnchor
-            .constraint(equalTo: view.leadingAnchor)
-            .isActive = true
-        scrollView
-            .trailingAnchor
-            .constraint(equalTo: view.trailingAnchor)
-            .isActive = true
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
         scrollView.delegate = self
         
         let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self,
@@ -126,7 +116,7 @@ class FullscreenImageViewController: UIViewController {
         scrollView.addGestureRecognizer(doubleTapGestureRecognizer)
     }
         
-    func placeBarButtonItem() {
+    private func placeBarButtonItem() {
         let barButtonItem = UIBarButtonItem(image: barButtonState.image,
                                             style: .plain,
                                             target: self,

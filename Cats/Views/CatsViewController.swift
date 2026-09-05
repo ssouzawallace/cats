@@ -74,26 +74,18 @@ class CatsViewController: UICollectionViewController {
     
     private func addLoadingView() {
         view.addSubview(loadingView)
-        loadingView
-            .centerXAnchor
-            .constraint(equalTo: view.centerXAnchor)
-            .isActive = true
-        loadingView
-            .centerYAnchor
-            .constraint(equalTo: view.centerYAnchor)
-            .isActive = true
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     private func addEmptyStateView() {
         view.addSubview(emptyStateView)
-        emptyStateView
-            .centerXAnchor
-            .constraint(equalTo: view.centerXAnchor)
-            .isActive = true
-        emptyStateView
-            .centerYAnchor
-            .constraint(equalTo: view.centerYAnchor)
-            .isActive = true
+        NSLayoutConstraint.activate([
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
         emptyStateView.isHidden = true
     }
 }
